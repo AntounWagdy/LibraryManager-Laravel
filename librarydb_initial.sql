@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2020 at 12:14 PM
+-- Generation Time: Dec 13, 2020 at 01:53 AM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -489,6 +489,29 @@ INSERT INTO `books` (`ID`, `CODE`, `NAME`, `AUTHOR`, `COPIES`, `SECTION`, `SHELF
 (444, '195784680443', 'الوثيقة المجمعة للكتيبة ', '', 7, 1, 6, 8),
 (445, '195784680444', 'كتب روسية ', '', 9, 1, 6, 9);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `borrows`
+--
+
+CREATE TABLE `borrows` (
+  `ID` int(11) NOT NULL,
+  `CLASS` varchar(50) NOT NULL,
+  `NAME` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `borrows`
+--
+
+INSERT INTO `borrows` (`ID`, `CLASS`, `NAME`) VALUES
+(1, 'ملازم أول', 'أنطون وجدى'),
+(2, 'عقيد', 'إسامة سيد ذو الفقار'),
+(5, 'ملازم أول', 'أحمد السيد حسن'),
+(7, 'عقيد', 'إسامة سيد ذو الفقار'),
+(7, 'ملازم أول', 'أنطون وجدى');
+
 --
 -- Indexes for dumped tables
 --
@@ -499,6 +522,22 @@ INSERT INTO `books` (`ID`, `CODE`, `NAME`, `AUTHOR`, `COPIES`, `SECTION`, `SHELF
 ALTER TABLE `books`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `CODE` (`CODE`);
+
+--
+-- Indexes for table `borrows`
+--
+ALTER TABLE `borrows`
+  ADD PRIMARY KEY (`ID`,`CLASS`,`NAME`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `borrows`
+--
+ALTER TABLE `borrows`
+  ADD CONSTRAINT `borrows_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `books` (`ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
