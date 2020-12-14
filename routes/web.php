@@ -23,3 +23,4 @@ Route::get("/view",[getBooks::class, 'getBookByData']);
 Route::get("/getBar",[getBooks::class, 'getBar']);
 Route::get("/closeApp",[getBooks::class, 'closeApp']);
 Route::get("/borrow",[getBooks::class, 'borrow']);
+Route::get("/return",[getBooks::class, 'return_book']);

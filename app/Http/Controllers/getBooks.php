@@ -94,37 +94,74 @@ class getBooks extends Controller
             getBooks::$pid = NULL;
         }
     }
+
+    /**
+     * Borrow book given book id and user name
+     */
     function borrow(Request $req)
     {
         if ($req->input("id")) {
+            // edit number of copies
+            $book = Book::find($req->input("id"));
+            if ($book->COPIES <= 0) {
+                return back()->withErrors(['borrow_error']);
+            }
+            $book->COPIES = $book->COPIES - 1;
+            $book->save();
+
+            // insert a borrow row
             Borrows::insert([
                 'ID' => $req->input("id"),
                 'CLASS' => $req->input("class"),
-                'NAME' => $req->input("name")
+                'NAME' => $this->adjustString($req->input("name"))
             ]);
         }
 
         if ($req->input("book_id")) {
             $data = Book::join('borrows', 'Books.id', '=', 'borrows.id')
-                ->where('books.ID','=',$req->input("book_id"))
-                ->select('books.name', 'borrows.*')->get();
+                ->where('books.ID', '=', $req->input("book_id"))
+                ->select('books.name', 'books.id', 'borrows.*')->get();
         } else {
             $data = Book::join('borrows', 'Books.id', '=', 'borrows.id')
-                ->select('books.name', 'borrows.*')->get();
+                ->select('books.name', 'books.ID', 'borrows.*')->get();
         }
         $obj = json_decode("");
         foreach ($data as $row) {
-            $name = $row['CLASS'] . " " . $row['NAME'];
+            $name = $row['CLASS'] . "/ " . $row['NAME'];
 
             if (!isset($obj[0][$name])) {
-                $obj[0][$name] = [$row['name']];
+                $obj[0][$name] = [[$row['name'], $row['ID']]];
             } else {
-                array_push($obj[0][$name], $row['name']);
+                array_push($obj[0][$name], [$row['name'], $row['ID']]);
             }
         }
         if (isset($obj[0]))
             return view('borrows_view', ['data' => $obj[0]]);
         else
             return view('borrows_view', ['data' => NULL]);
+    }
+
+    /**
+     * Return a book given user id and book id
+     */
+    function return_book(Request $req)
+    {
+        $book_id = $req->input("book_id");
+        $user_name = $req->input("name");
+        $list = explode("/ ", $user_name);
+        $class_name = $list[0];
+        $name = $list[1];
+
+        // increase number of copies
+        $book = Book::find($book_id);
+        $book->COPIES = $book->COPIES + 1;
+        $book->save();
+
+
+        Borrows::where('CLASS', '=', $class_name)
+            ->where('NAME', '=', $name)
+            ->where('ID', '=', $book_id)->delete();
+
+        return redirect("/borrow");
     }
 }

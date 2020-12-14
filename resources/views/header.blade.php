@@ -1,6 +1,6 @@
 <div class='header' id="myHeader">
     <h1>المكتبة العسكرية للواء 24 إنذار</h1>
-    <img src="img/logo.png" style="height: 100px;"/>
+    <a href='/'><img src="img/logo.png" style="height: 100px;"/></a>
 </div>
 <script>
     window.onscroll = function(){myFunction()};
