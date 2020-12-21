@@ -83,17 +83,6 @@ class getBooks extends Controller
         return NULL;
     }
 
-    /**
-     * Kill the zbar task with kill command.
-     */
-    function closeApp()
-    {
-        error_log("close app here");
-        if (getBooks::$pid != NULL) {
-            exec('taskkill /F /T /PID ' . getBooks::$pid);
-            getBooks::$pid = NULL;
-        }
-    }
 
     /**
      * Borrow book given book id and user name
